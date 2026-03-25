@@ -115,10 +115,10 @@ export function UIThemeModal({ isOpen, onClose }: UIThemeModalProps) {
                           <div 
                             className="px-3 py-1 text-[10px] font-bold"
                             style={{
-                              borderRadius: theme.button.borderRadius,
-                              background: `linear-gradient(135deg, ${theme.button.gradientStart}, ${theme.button.gradientEnd})`,
-                              color: theme.button.textColor,
-                              boxShadow: theme.button.shadow.replace('0 8px 0', '0 2px 0'),
+                              borderRadius: theme.button?.borderRadius || '8px',
+                              background: theme.button ? `linear-gradient(135deg, ${theme.button.gradientStart}, ${theme.button.gradientEnd})` : theme.previewColor,
+                              color: theme.button?.textColor || '#FFFFFF',
+                              boxShadow: theme.button?.shadow?.replace('0 8px 0', '0 2px 0') || 'none',
                             }}
                           >
                             {t('button')}
@@ -128,10 +128,10 @@ export function UIThemeModal({ isOpen, onClose }: UIThemeModalProps) {
                           <div 
                             className="px-3 py-1 text-[10px]"
                             style={{
-                              borderRadius: theme.card.borderRadius,
-                              backgroundColor: theme.card.background,
-                              border: theme.card.border,
-                              color: theme.chip.textColor,
+                              borderRadius: theme.card?.borderRadius || '8px',
+                              backgroundColor: theme.card?.background || theme.previewColor + '20',
+                              border: theme.card?.border || 'none',
+                              color: theme.chip?.textColor || theme.previewColor,
                             }}
                           >
                             {t('card')}
@@ -141,9 +141,9 @@ export function UIThemeModal({ isOpen, onClose }: UIThemeModalProps) {
                           <div 
                             className="px-3 py-1 text-[10px]"
                             style={{
-                              borderRadius: theme.chip.borderRadius,
-                              backgroundColor: theme.chip.background,
-                              color: theme.chip.textColor,
+                              borderRadius: theme.chip?.borderRadius || '8px',
+                              backgroundColor: theme.chip?.background || theme.previewColor + '40',
+                              color: theme.chip?.textColor || '#FFFFFF',
                             }}
                           >
                             {t('chip')}
