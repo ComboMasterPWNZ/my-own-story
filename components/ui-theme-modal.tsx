@@ -93,8 +93,8 @@ export function UIThemeModal({ isOpen, onClose }: UIThemeModalProps) {
                       <div 
                         className="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg"
                         style={{ 
-                          background: `linear-gradient(135deg, ${theme.button.gradientStart}, ${theme.button.gradientEnd})`,
-                          boxShadow: theme.button.shadow,
+                          background: theme.button ? `linear-gradient(135deg, ${theme.button.gradientStart}, ${theme.button.gradientEnd})` : `linear-gradient(135deg, ${theme.previewColor}, ${theme.previewColor}88)`,
+                          boxShadow: theme.button?.shadow || `0 4px 0 ${theme.previewColor}88`,
                         }}
                       >
                         {t(theme.nameKey).split(' ')[0]}

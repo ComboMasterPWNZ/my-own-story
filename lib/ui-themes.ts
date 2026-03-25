@@ -6,40 +6,51 @@ export const uiThemes: Record<UIThemeId, UITheme> = {
     nameKey: 'candy',
     descriptionKey: 'candyDesc',
     previewColor: '#FF69B4',
-    button: {
-      borderRadius: '25px',
-      padding: '12px 24px',
-      shadow: '0 8px 0 #C41E3A',
-      hoverScale: '1.05',
-      gradientStart: '#FF69B4',
-      gradientEnd: '#FFB6C1',
-      textColor: '#FFFFFF',
-    },
-    card: {
-      borderRadius: '30px',
-      shadow: '0 10px 20px rgba(255, 105, 180, 0.3)',
-      background: 'linear-gradient(135deg, #FFF0F5, #FFE4E1)',
-      border: '3px solid #FF69B4',
-    },
-    chip: {
-      borderRadius: '30px',
-      background: '#FFB6C1',
-      activeBackground: '#FF69B4',
-      textColor: '#FFFFFF',
-    },
     background: {
       main: '#FFF0F5',
-      gradient: 'radial-gradient(circle at 10% 20%, #FFE4E1, #FFB6C1, #FF69B4)',
+      gradient: 'radial-gradient(circle at 20% 30%, #FFB6C1, #FF69B4)',
+      pattern: 'repeating-linear-gradient(45deg, #FFB6C1 0px, #FFB6C1 20px, #FFC0CB 20px, #FFC0CB 40px)',
     },
-    typography: {
-      titleFont: "'Comic Sans MS', 'Comic Neue', cursive",
-      bodyFont: "'Comic Neue', system-ui",
-      titleWeight: '800',
+    floatingElements: ['🍬', '🍭', '🍫', '🧁', '🍰', '🍪', '🍩'],
+    icons: {
+      home: '🏠', create: '✨', profile: '👤', favorite: '❤️', back: '⬅️', theme: '🎨'
     },
     animation: {
       hoverEffect: 'translateY(-8px) rotate(2deg)',
-      transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+      transition: '0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)'
     },
+    typography: {
+      titleFont: "'Bubblegum Sans', cursive",
+      bodyFont: "'Comic Neue', cursive",
+      titleWeight: '800'
+    },
+    font: {
+      title: "'Bubblegum Sans', cursive",
+      body: "'Comic Neue', cursive",
+      size: { title: '28px', body: '16px' }
+    },
+    cursor: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\'%3E%3Ccircle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23FF69B4\'/%3E%3Ccircle cx=\'10\' cy=\'10\' r=\'3\' fill=\'white\'/%3E%3Ccircle cx=\'22\' cy=\'10\' r=\'3\' fill=\'white\'/%3E%3Cpath d=\'M8 20 Q16 28 24 20\' stroke=\'white\' stroke-width=\'2\' fill=\'none\'/%3E%3C/svg%3E"), auto',
+    buttonStyle: {
+      borderRadius: '60% 40% 50% 50% / 60% 50% 60% 40%',
+      shadow: '0 8px 0 #C41E3A',
+      gradient: 'linear-gradient(135deg, #FF69B4, #FFB6C1)',
+      padding: '12px 24px',
+      hoverScale: '1.05',
+      textColor: '#FFFFFF'
+    },
+    cardStyle: {
+      borderRadius: '30px 20px 40px 25px',
+      shadow: '0 10px 0 #C41E3A',
+      border: '3px solid #FF69B4',
+      background: 'linear-gradient(135deg, #FFF0F5, #FFE4E1)'
+    },
+    chipStyle: {
+      borderRadius: '30px',
+      background: '#FFB6C1',
+      activeBackground: '#FF69B4',
+      textColor: '#FFFFFF'
+    },
+    sound: 'pop'
   },
   ocean: {
     id: 'ocean',

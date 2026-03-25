@@ -28,10 +28,10 @@ export function ThemedChip({ active = false, className, children, ...props }: Th
         className
       )}
       style={{
-        backgroundColor: active ? currentUITheme.chip.activeBackground : currentUITheme.chip.background,
-        borderColor: active ? currentUITheme.chip.activeBackground : colors.border,
-        color: active ? currentUITheme.chip.textColor : colors.text,
-        borderRadius: currentUITheme.chip.borderRadius,
+        backgroundColor: active ? currentUITheme.chip?.activeBackground || colors.primary : currentUITheme.chip?.background || 'transparent',
+        borderColor: active ? currentUITheme.chip?.activeBackground || colors.primary : colors.border,
+        color: active ? currentUITheme.chip?.textColor || (isDark ? '#000' : '#fff') : colors.text,
+        borderRadius: currentUITheme.chip?.borderRadius || '1.5rem',
         opacity: active ? 1 : 0.7
       }}
       {...(props as any)}

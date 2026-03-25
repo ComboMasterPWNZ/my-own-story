@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { UIThemeProvider } from '@/context/UIThemeContext';
+import { FloatingElements } from '@/components/floating-elements';
 import { createClient } from '@/lib/supabase/server';
 import '../globals.css';
 
@@ -78,6 +79,7 @@ export default async function LocaleLayout({
       <body>
         <ThemeProvider>
           <UIThemeProvider>
+            <FloatingElements />
             <ToastProvider>
               <NextIntlClientProvider messages={messages}>
                 {children}

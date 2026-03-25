@@ -30,10 +30,10 @@ export function ThemedButton({
     switch (variant) {
       case 'primary':
         return {
-          background: `linear-gradient(135deg, ${currentUITheme.button.gradientStart}, ${currentUITheme.button.gradientEnd})`,
-          color: currentUITheme.button.textColor,
+          background: currentUITheme.button ? `linear-gradient(135deg, ${currentUITheme.button.gradientStart}, ${currentUITheme.button.gradientEnd})` : `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+          color: currentUITheme.button?.textColor || (isDark ? '#000' : '#fff'),
           borderColor: 'transparent',
-          boxShadow: currentUITheme.button.shadow,
+          boxShadow: currentUITheme.button?.shadow || '0 8px 0 rgba(0,0,0,0.2)',
         };
       case 'secondary':
         return {

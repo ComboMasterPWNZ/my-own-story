@@ -38,7 +38,7 @@ export interface UITheme {
   nameKey: string;
   descriptionKey: string;
   previewColor: string;
-  button: {
+  button?: {
     borderRadius: string;
     padding: string;
     shadow: string;
@@ -47,14 +47,14 @@ export interface UITheme {
     gradientEnd: string;
     textColor: string;
   };
-  card: {
+  card?: {
     borderRadius: string;
     shadow: string;
     background: string;
     border: string;
     borderImage?: string;
   };
-  chip: {
+  chip?: {
     borderRadius: string;
     background: string;
     activeBackground: string;
@@ -65,7 +65,7 @@ export interface UITheme {
     gradient: string;
     pattern?: string;
   };
-  typography: {
+  typography?: {
     titleFont: string;
     bodyFont: string;
     titleWeight: string;
@@ -73,5 +73,45 @@ export interface UITheme {
   animation: {
     hoverEffect: string;
     transition: string;
+  };
+  font?: {
+    title: string;
+    body: string;
+    size: {
+      title: string;
+      body: string;
+    };
+  };
+  // Новые поля для расширенных стилей
+  floatingElements?: string[];
+  icons?: {
+    home: string;
+    create: string;
+    profile: string;
+    favorite: string;
+    back: string;
+    theme: string;
+  };
+  cursor?: string;
+  sound?: string;
+  buttonStyle?: {
+    borderRadius: string;
+    shadow: string;
+    gradient: string;
+    padding: string;
+    hoverScale: string;
+    textColor: string;
+  };
+  cardStyle?: {
+    borderRadius: string;
+    shadow: string;
+    border: string;
+    background: string;
+  };
+  chipStyle?: {
+    borderRadius: string;
+    background: string;
+    activeBackground: string;
+    textColor: string;
   };
 }

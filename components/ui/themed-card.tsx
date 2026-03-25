@@ -22,14 +22,14 @@ export function ThemedCard({ className, children, style, ...props }: ThemedCardP
         className
       )}
       style={{
-        background: currentUITheme.card.background,
-        borderColor: currentUITheme.card.border.includes('linear-gradient') 
+        background: currentUITheme.card?.background || colors.card,
+        borderColor: currentUITheme.card?.border?.includes('linear-gradient') 
           ? 'transparent' 
-          : currentUITheme.card.border,
+          : currentUITheme.card?.border || `${colors.primary}20`,
         color: colors.text,
-        borderRadius: currentUITheme.card.borderRadius,
-        boxShadow: currentUITheme.card.shadow,
-        borderImage: currentUITheme.card.borderImage,
+        borderRadius: currentUITheme.card?.borderRadius || '2.5rem',
+        boxShadow: currentUITheme.card?.shadow || '0 10px 20px rgba(0,0,0,0.1)',
+        borderImage: currentUITheme.card?.borderImage,
         ...style
       }}
       {...props}
