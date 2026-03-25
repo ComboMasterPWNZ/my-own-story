@@ -1,0 +1,7 @@
+{
+    "easycode.maxTokens": 2000,
+    "easycode.temperature": 0.5,
+    "easycode.globalChatContext": "Мы работаем над проектом \"Персонажка\" — приложение для создания персонализированных детских сказок. Технологии: Next.js 15, TypeScript, Tailwind CSS, Supabase, Framer Motion. Всегда проверяй, что код корректен и не имеет синтаксических ошибок. Не используй комментарии \"// ... existing code ...\" внутри JSX. Если нужно показать полный файл — показывай его целиком.",
+    "easycode.showCommandInTerminal": true,
+    "easycode.useContextCompression": true
+}
