@@ -63,6 +63,7 @@
     "summaryInterests": "Interests",
     "summaryMoral": "Theme",
     "summaryStyle": "Style",
+    "summaryLanguage": "Language",
     "age1": "year",
     "age2": "years",
     "age5": "years",
@@ -72,6 +73,7 @@
   },
   "Profile": {
     "language": "Language",
+    "storyLanguage": "Story Language",
     "myChildren": "My Children",
     "addChild": "Add",
     "stories": "Stories",

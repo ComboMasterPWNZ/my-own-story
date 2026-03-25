@@ -91,7 +91,7 @@ export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerPro
           </div>
           <div className="text-left">
             <p className="font-black text-lg">{t(selectedLang.code)}</p>
-            <p className="text-xs font-bold opacity-40 uppercase tracking-wider">{t('label')}</p>
+            <p className="text-xs font-bold opacity-40 uppercase tracking-wider">{t(`${selectedLang.code}Desc`)}</p>
           </div>
         </div>
         <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />

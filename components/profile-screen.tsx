@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { ArrowLeft, LogOut, Trash2, Crown, Book, Heart, Palette, Sparkles, Plus, User, Pencil, PlayCircle, MessageSquare, Send, Languages } from 'lucide-react';
+import { ArrowLeft, LogOut, Trash2, Crown, Book, Heart, Palette, Sparkles, Plus, User, Pencil, PlayCircle, MessageSquare, Send, Languages, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
@@ -182,7 +182,13 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
         </div>
 
         {/* Story Language Picker */}
-        <StoryLanguagePicker />
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 px-2">
+            <BookOpen className="w-5 h-5 opacity-40" />
+            <h3 className="text-xl font-black">{t('storyLanguage')}</h3>
+          </div>
+          <StoryLanguagePicker />
+        </div>
 
         {/* Children Section */}
         <div className="space-y-4">

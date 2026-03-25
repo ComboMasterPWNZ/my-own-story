@@ -59,6 +59,14 @@ const INTERESTS = [
   { id: "Пираты", icon: Anchor, labelKey: "pirates" }
 ];
 
+const LANGUAGES = [
+  { code: 'ru', flag: '🇷🇺' },
+  { code: 'en', flag: '🇬🇧' },
+  { code: 'es', flag: '🇪🇸' },
+  { code: 'fr', flag: '🇫🇷' },
+  { code: 'de', flag: '🇩🇪' },
+];
+
 const MORALS = [
   { id: "Доброта", icon: Heart, labelKey: "kindness" },
   { id: "Смелость", icon: Shield, labelKey: "courage" },
@@ -81,10 +89,12 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
   const tInterests = useTranslations('Interests');
   const tMorals = useTranslations('Morals');
   const tStyles = useTranslations('Styles');
+  const tStoryLanguage = useTranslations('StoryLanguage');
   const tChildModal = useTranslations('ChildModal');
   const [step, setStep] = useState(1);
   const [children, setChildren] = useState<ChildProfile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [storyLanguage, setStoryLanguage] = useState('ru');
   const [formData, setFormData] = useState({
     child_id: '',
     interests: [] as string[],
@@ -106,6 +116,19 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
 
   useEffect(() => {
     fetchChildren();
+    // Загружаем язык сказки из профиля
+    const loadStoryLanguage = async () => {
+      if (!profile?.id) return;
+      const { data } = await (supabase as any)
+        .from('profiles')
+        .select('story_language')
+        .eq('id', profile.id)
+        .single();
+      if (data?.story_language) {
+        setStoryLanguage(data.story_language);
+      }
+    };
+    loadStoryLanguage();
   }, [profile?.id, supabase]);
 
   const nextStep = () => setStep(s => s + 1);
@@ -359,11 +382,23 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
                       return item ? tMorals(item.labelKey) : formData.moral_theme;
                     })()}</span>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${currentTheme.colors.text}10` }}>
                     <span className="opacity-40 font-bold uppercase text-[10px] tracking-widest">{t('summaryStyle')}</span>
                     <span className="font-black">{(() => {
                       const item = STYLES.find(s => s.id === formData.art_style);
                       return item ? tStyles(item.labelKey) : formData.art_style;
+                    })()}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="opacity-40 font-bold uppercase text-[10px] tracking-widest">{t('summaryLanguage')}</span>
+                    <span className="font-black flex items-center gap-2">{(() => {
+                      const lang = LANGUAGES.find(l => l.code === storyLanguage);
+                      return (
+                        <>
+                          <span className="text-xl">{lang?.flag}</span>
+                          <span>{tStoryLanguage(storyLanguage)}</span>
+                        </>
+                      );
                     })()}</span>
                   </div>
                 </div>
