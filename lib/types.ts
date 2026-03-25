@@ -30,3 +30,48 @@ export interface Appearance {
   hair_length?: HairLength;
   eye_color?: EyeColor;
 }
+
+export type UIThemeId = 'candy' | 'ocean' | 'forest' | 'space' | 'rainbow';
+
+export interface UITheme {
+  id: UIThemeId;
+  nameKey: string;
+  descriptionKey: string;
+  previewColor: string;
+  button: {
+    borderRadius: string;
+    padding: string;
+    shadow: string;
+    hoverScale: string;
+    gradientStart: string;
+    gradientEnd: string;
+    textColor: string;
+  };
+  card: {
+    borderRadius: string;
+    shadow: string;
+    background: string;
+    border: string;
+    borderImage?: string;
+  };
+  chip: {
+    borderRadius: string;
+    background: string;
+    activeBackground: string;
+    textColor: string;
+  };
+  background: {
+    main: string;
+    gradient: string;
+    pattern?: string;
+  };
+  typography: {
+    titleFont: string;
+    bodyFont: string;
+    titleWeight: string;
+  };
+  animation: {
+    hoverEffect: string;
+    transition: string;
+  };
+}

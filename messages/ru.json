@@ -73,6 +73,7 @@
   },
   "Profile": {
     "language": "Язык приложения",
+    "storyLanguage": "Язык сказок",
     "myChildren": "Мои дети",
     "addChild": "Добавить",
     "stories": "Сказки",
@@ -195,6 +196,24 @@
     "esDesc": "Cuentos en español",
     "frDesc": "Histoires en français",
     "deDesc": "Geschichten auf Deutsch"
+  },
+  "UITheme": {
+    "title": "Стиль интерфейса",
+    "description": "Выбери свой любимый стиль",
+    "candy": "🍬 Конфетный",
+    "candyDesc": "Сладкие цвета, круглые формы, как леденцы",
+    "ocean": "🌊 Океанский",
+    "oceanDesc": "Волны, пузырьки, прохлада глубин",
+    "forest": "🌲 Лесной",
+    "forestDesc": "Природа, грибочки, зелёные поляны",
+    "space": "🚀 Космический",
+    "spaceDesc": "Звёзды, ракеты, далёкие галактики",
+    "rainbow": "🌈 Радужный",
+    "rainbowDesc": "Все цвета радуги, весёлый праздник",
+    "done": "Готово",
+    "button": "Кнопка",
+    "card": "Карточка",
+    "chip": "Чип"
   },
   "ChildModal": {
     "titleEdit": "Редактировать профиль",

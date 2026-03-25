@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { useSafeTheme } from '@/hooks/useSafeTheme';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ThemedChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
@@ -14,7 +15,8 @@ interface ThemedChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 
 export function ThemedChip({ active = false, className, children, ...props }: ThemedChipProps) {
   const theme = useSafeTheme();
-  const { colors, borderRadius, isDark } = theme;
+  const { currentUITheme } = useUITheme();
+  const { colors, isDark } = theme;
 
   return (
     <motion.button
@@ -26,10 +28,10 @@ export function ThemedChip({ active = false, className, children, ...props }: Th
         className
       )}
       style={{
-        backgroundColor: active ? colors.primary : 'transparent',
-        borderColor: active ? colors.primary : colors.border,
-        color: active ? (isDark ? '#000' : '#fff') : colors.text,
-        borderRadius: borderRadius?.button || '1.5rem',
+        backgroundColor: active ? currentUITheme.chip.activeBackground : currentUITheme.chip.background,
+        borderColor: active ? currentUITheme.chip.activeBackground : colors.border,
+        color: active ? currentUITheme.chip.textColor : colors.text,
+        borderRadius: currentUITheme.chip.borderRadius,
         opacity: active ? 1 : 0.7
       }}
       {...(props as any)}
@@ -41,9 +43,9 @@ export function ThemedChip({ active = false, className, children, ...props }: Th
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md border-2" 
-            style={{ borderColor: colors.primary }}
+            style={{ borderColor: currentUITheme.chip.activeBackground }}
           >
-            <Check className="w-3 h-3" style={{ color: colors.primary }} strokeWidth={4} />
+            <Check className="w-3 h-3" style={{ color: currentUITheme.chip.activeBackground }} strokeWidth={4} />
           </motion.div>
         )}
       </AnimatePresence>

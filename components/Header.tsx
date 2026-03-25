@@ -2,12 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { ArrowLeft, Sparkles, Palette } from 'lucide-react';
+import { ArrowLeft, Sparkles, Palette, Paintbrush } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { useUITheme } from '@/context/UIThemeContext';
 import { useUser } from '@/hooks/useUser';
 import { useTranslations } from 'next-intl';
 import { ThemePickerModal } from './theme-picker-modal';
 import { LanguagePickerModal } from './language-picker-modal';
+import { UIThemeModal } from './ui-theme-modal';
 import { createClient } from '@/lib/supabase/client';
 
 interface HeaderProps {
@@ -22,6 +24,7 @@ export function Header({ showBack = false, onBack, title }: HeaderProps) {
   const { user } = useUser();
   const t = useTranslations('App');
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [isUIThemeModalOpen, setIsUIThemeModalOpen] = useState(false);
   const [originalTheme, setOriginalTheme] = useState(currentTheme.name);
   const supabase = createClient();
 
@@ -107,6 +110,17 @@ export function Header({ showBack = false, onBack, title }: HeaderProps) {
                   </div>
                 </button>
                 <button
+                  onClick={() => setIsUIThemeModalOpen(true)}
+                  className="w-9 h-9 rounded-full overflow-hidden border-2 hover:scale-105 transition-all cursor-pointer relative z-20"
+                  style={{ borderColor: currentTheme.colors.primary }}
+                  aria-label="Выбрать стиль интерфейса"
+                  type="button"
+                >
+                  <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: currentTheme.colors.primary }}>
+                    <Paintbrush className="w-5 h-5 text-white" />
+                  </div>
+                </button>
+                <button
                   onClick={() => router.push('/profile')}
                   className="w-9 h-9 rounded-full overflow-hidden border-2"
                   style={{ borderColor: currentTheme.colors.primary }}
@@ -137,6 +151,11 @@ export function Header({ showBack = false, onBack, title }: HeaderProps) {
         currentTheme={currentTheme}
       />
       
+      {/* UI Theme Modal */}
+      <UIThemeModal
+        isOpen={isUIThemeModalOpen}
+        onClose={() => setIsUIThemeModalOpen(false)}
+      />
     </>
   );
 }

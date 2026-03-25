@@ -197,6 +197,24 @@
     "frDesc": "Histoires en français",
     "deDesc": "Geschichten auf Deutsch"
   },
+  "UITheme": {
+    "title": "Interface Style",
+    "description": "Choose your favorite style",
+    "candy": "🍬 Candy",
+    "candyDesc": "Sweet colors, round shapes, like lollipops",
+    "ocean": "🌊 Ocean",
+    "oceanDesc": "Waves, bubbles, cool depths",
+    "forest": "🌲 Forest",
+    "forestDesc": "Nature, mushrooms, green meadows",
+    "space": "🚀 Space",
+    "spaceDesc": "Stars, rockets, distant galaxies",
+    "rainbow": "🌈 Rainbow",
+    "rainbowDesc": "All rainbow colors, fun celebration",
+    "done": "Done",
+    "button": "Button",
+    "card": "Card",
+    "chip": "Chip"
+  },
   "ChildModal": {
     "titleEdit": "Edit Profile",
     "titleNew": "New Hero",

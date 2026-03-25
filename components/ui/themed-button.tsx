@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useSafeTheme } from '@/hooks/useSafeTheme';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ThemedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -22,15 +23,17 @@ export function ThemedButton({
   ...props 
 }: ThemedButtonProps) {
   const theme = useSafeTheme();
+  const { currentUITheme } = useUITheme();
   const { colors, borderRadius, isDark, buttonStyle } = theme;
 
   const getStyles = () => {
     switch (variant) {
       case 'primary':
         return {
-          backgroundColor: colors.primary,
-          color: isDark ? '#000' : '#fff',
-          borderColor: colors.primary,
+          background: `linear-gradient(135deg, ${currentUITheme.button.gradientStart}, ${currentUITheme.button.gradientEnd})`,
+          color: currentUITheme.button.textColor,
+          borderColor: 'transparent',
+          boxShadow: currentUITheme.button.shadow,
         };
       case 'secondary':
         return {
@@ -72,7 +75,10 @@ export function ThemedButton({
   return (
     <motion.button
       whileTap={{ scale: 0.98, y: 2 }}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ 
+        scale: parseFloat(currentUITheme.button.hoverScale),
+        y: -2 
+      }}
       className={cn(
         "inline-flex items-center justify-center gap-2 font-black transition-all shadow-lg disabled:opacity-50 disabled:pointer-events-none",
         buttonStyle, // Применяем специфичные для темы стили (тени, границы)
@@ -81,7 +87,8 @@ export function ThemedButton({
       )}
       style={{
         ...getStyles(),
-        borderRadius: borderRadius?.button || '2rem'
+        borderRadius: currentUITheme.button.borderRadius,
+        transition: currentUITheme.animation.transition,
       }}
       disabled={loading || props.disabled}
       {...(props as any)}

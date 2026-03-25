@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { useSafeTheme } from '@/hooks/useSafeTheme';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ThemedCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -11,19 +12,24 @@ interface ThemedCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function ThemedCard({ className, children, style, ...props }: ThemedCardProps) {
   const theme = useSafeTheme();
-  const { colors, borderRadius } = theme;
+  const { currentUITheme } = useUITheme();
+  const { colors } = theme;
 
   return (
     <div
       className={cn(
-        "border-2 p-6 shadow-xl transition-all duration-300",
+        "border-2 p-6 transition-all duration-300",
         className
       )}
       style={{
-        backgroundColor: colors.card,
-        borderColor: `${colors.primary}20`,
+        background: currentUITheme.card.background,
+        borderColor: currentUITheme.card.border.includes('linear-gradient') 
+          ? 'transparent' 
+          : currentUITheme.card.border,
         color: colors.text,
-        borderRadius: borderRadius?.card || '2.5rem',
+        borderRadius: currentUITheme.card.borderRadius,
+        boxShadow: currentUITheme.card.shadow,
+        borderImage: currentUITheme.card.borderImage,
         ...style
       }}
       {...props}
