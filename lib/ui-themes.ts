@@ -213,4 +213,44 @@ export const uiThemes: Record<UIThemeId, UITheme> = {
       transition: 'all 0.2s ease-in-out',
     },
   },
+  underwater: {
+    id: 'underwater',
+    nameKey: 'underwater',
+    descriptionKey: 'underwaterDesc',
+    previewColor: '#40E0D0',
+    button: {
+      borderRadius: '30px 10px 30px 10px',
+      padding: '12px 24px',
+      shadow: '0 8px 0 #008B8B',
+      hoverScale: '1.05',
+      gradientStart: '#40E0D0',
+      gradientEnd: '#20B2AA',
+      textColor: '#FFFFFF',
+    },
+    card: {
+      borderRadius: '20px 40px 20px 40px',
+      shadow: '0 8px 20px rgba(64, 224, 208, 0.3)',
+      background: 'linear-gradient(135deg, #E0FFFF, #B0E0E6)',
+      border: '3px solid #40E0D0',
+    },
+    chip: {
+      borderRadius: '20px',
+      background: '#7FFFD4',
+      activeBackground: '#40E0D0',
+      textColor: '#008B8B',
+    },
+    background: {
+      main: '#E0FFFF',
+      gradient: 'linear-gradient(135deg, #E0FFFF, #87CEEB, #40E0D0)',
+    },
+    typography: {
+      titleFont: "'Quicksand', system-ui",
+      bodyFont: "'Quicksand', system-ui",
+      titleWeight: '700',
+    },
+    animation: {
+      hoverEffect: 'translateY(-5px) scale(1.02)',
+      transition: 'all 0.3s ease-out',
+    },
+  },
 };

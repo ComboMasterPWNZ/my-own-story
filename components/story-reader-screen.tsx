@@ -13,17 +13,16 @@ import { MemoryGame } from './games/memory-game';
 import { ColoringGame } from './games/coloring-game';
 import { Skeleton } from './ui/skeleton';
 import Image from 'next/image';
-import { ThemeConfig } from '@/lib/themes';
 import { useTranslations } from 'next-intl';
 import { ChildProfile, Appearance } from '@/lib/types';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface StoryReaderScreenProps {
   storyId: string;
-  currentTheme: ThemeConfig;
   onBack: () => void;
 }
 
-export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReaderScreenProps) {
+export function StoryReaderScreen({ storyId, onBack }: StoryReaderScreenProps) {
   const [story, setStory] = useState<Record<string, any> | null>(null);
   const [child, setChild] = useState<ChildProfile | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -34,6 +33,8 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
   const { declineName } = useNameDeclension();
   const supabase = createClient();
   const t = useTranslations('Story');
+  const { currentUITheme, colorMode } = useUITheme();
+  const colors = currentUITheme.colors[colorMode];
 
   useEffect(() => {
     const fetchStory = async () => {
@@ -128,28 +129,17 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
     <div 
       className="flex flex-col min-h-screen relative overflow-hidden" 
       style={{ 
-        background: `linear-gradient(to bottom, ${currentTheme.colors.background}, ${currentTheme.colors.card})` 
+        background: `linear-gradient(to bottom, ${colors.background}, ${colors.card})` 
       }}
     >
-      {/* Theme Pattern Overlay */}
-      {currentTheme.pattern && (
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-30 transition-all duration-1000"
-          style={{ 
-            backgroundImage: currentTheme.pattern,
-            backgroundRepeat: 'repeat'
-          }}
-        />
-      )}
-
       {/* Decorative Background Elements */}
       <div 
         className="absolute top-[-10%] right-[-10%] w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" 
-        style={{ backgroundColor: currentTheme.colors.primary }}
+        style={{ backgroundColor: colors.primary }}
       />
       <div 
         className="absolute bottom-[-10%] left-[-10%] w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" 
-        style={{ backgroundColor: currentTheme.colors.secondary }}
+        style={{ backgroundColor: colors.secondary }}
       />
 
       <main className="flex-1 flex flex-col relative z-10 overflow-hidden">
@@ -168,7 +158,7 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
                 <div className="h-[40vh] min-h-[300px] relative shrink-0 p-6">
                   <div 
                     className="w-full h-full rounded-[3rem] overflow-hidden shadow-2xl relative border-4"
-                    style={{ borderColor: `${currentTheme.colors.primary}20` }}
+                    style={{ borderColor: `${colors.primary}20` }}
                   >
                     {hasImage ? (
                       isPremium ? (
@@ -186,10 +176,10 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
                           />
                         </>
                       ) : (
-                        <ImagePlaceholder variant="premium" currentTheme={currentTheme} />
+                        <ImagePlaceholder variant="premium" currentTheme={currentUITheme} />
                       )
                     ) : (
-                      <ImagePlaceholder variant="missing" currentTheme={currentTheme} />
+                      <ImagePlaceholder variant="missing" currentTheme={currentUITheme} />
                     )}
                     
                     {/* Gradient Overlay for text readability if needed */}
@@ -207,7 +197,7 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
                   >
                     <p 
                       className="text-2xl sm:text-3xl leading-[1.7] font-medium tracking-tight"
-                      style={{ color: currentTheme.colors.text }}
+                      style={{ color: colors.text.primary }}
                     >
                       {currentPageData?.text || "Loading text..."}
                     </p>
@@ -221,13 +211,13 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   className="w-24 h-24 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-xl"
-                  style={{ backgroundColor: `${currentTheme.colors.primary}20`, color: currentTheme.colors.primary }}
+                  style={{ backgroundColor: `${colors.primary}20`, color: colors.primary }}
                 >
                   <Gamepad2 className="w-12 h-12" />
                 </motion.div>
                 
-                <h2 className="text-4xl font-black mb-4" style={{ color: currentTheme.colors.text }}>{t('playTime')}</h2>
-                <p className="opacity-60 font-bold mb-12 max-w-[280px]" style={{ color: currentTheme.colors.text }}>{t('playTimeSub')}</p>
+                <h2 className="text-4xl font-black mb-4" style={{ color: colors.text.primary }}>{t('playTime')}</h2>
+                <p className="opacity-60 font-bold mb-12 max-w-[280px]" style={{ color: colors.text.secondary }}>{t('playTimeSub')}</p>
 
                 <div className="grid grid-cols-1 gap-4 w-full max-w-[320px]">
                     {[
@@ -242,14 +232,14 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
                       onClick={() => setActiveGame(game.id as any)}
                       className="flex items-center gap-5 p-6 rounded-[2rem] border-2 transition-all shadow-lg"
                       style={{ 
-                        backgroundColor: currentTheme.colors.card,
-                        borderColor: `${currentTheme.colors.primary}20`
+                        backgroundColor: colors.card,
+                        borderColor: `${colors.primary}20`
                       }}
                     >
                       <span className="text-4xl">{game.icon}</span>
                       <div className="text-left">
-                        <p className="font-black text-lg" style={{ color: currentTheme.colors.text }}>{game.label}</p>
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: currentTheme.colors.text }}>{game.sub}</p>
+                        <p className="font-black text-lg" style={{ color: colors.text.primary }}>{game.label}</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: colors.text.secondary }}>{game.sub}</p>
                       </div>
                     </motion.button>
                   ))}
@@ -270,9 +260,9 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
             onClick={() => setCurrentPage(p => p - 1)}
             className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl border-2 disabled:opacity-20 transition-all"
             style={{ 
-              backgroundColor: currentTheme.colors.card,
-              borderColor: `${currentTheme.colors.primary}40`,
-              color: currentTheme.colors.primary
+              backgroundColor: colors.card,
+              borderColor: `${colors.primary}40`,
+              color: colors.primary
             }}
           >
             <ChevronLeft className="w-8 h-8" />
@@ -282,11 +272,11 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
             <div 
               className="px-6 py-2 rounded-full border-2 backdrop-blur-md shadow-lg"
               style={{ 
-                backgroundColor: `${currentTheme.colors.card}80`,
-                borderColor: `${currentTheme.colors.primary}20`
+                backgroundColor: `${colors.card}80`,
+                borderColor: `${colors.primary}20`
               }}
             >
-              <span className="font-black text-lg tracking-widest" style={{ color: currentTheme.colors.text }}>
+              <span className="font-black text-lg tracking-widest" style={{ color: colors.text.primary }}>
                 {t('pages', { current: currentPage + 1, total: totalPages })}
               </span>
             </div>
@@ -298,9 +288,9 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
             onClick={() => setCurrentPage(p => p + 1)}
             className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl border-2 disabled:opacity-20 transition-all"
             style={{ 
-              backgroundColor: currentTheme.colors.card,
-              borderColor: `${currentTheme.colors.primary}40`,
-              color: currentTheme.colors.primary
+              backgroundColor: colors.card,
+              borderColor: `${colors.primary}40`,
+              color: colors.primary
             }}
           >
             <ChevronRight className="w-8 h-8" />
@@ -327,9 +317,9 @@ export function StoryReaderScreen({ storyId, currentTheme, onBack }: StoryReader
             whileTap={{ scale: 0.8 }}
             className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg border-2 transition-all"
             style={{ 
-              backgroundColor: `${currentTheme.colors.card}80`,
-              borderColor: `${currentTheme.colors.primary}20`,
-              color: currentTheme.colors.text
+              backgroundColor: `${colors.card}80`,
+              borderColor: `${colors.primary}20`,
+              color: colors.text.primary
             }}
           >
             <Share2 className="w-6 h-6" />

@@ -4,7 +4,6 @@ import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
 import { useUITheme } from '@/context/UIThemeContext';
 
 interface ThemedChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -14,9 +13,8 @@ interface ThemedChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export function ThemedChip({ active = false, className, children, ...props }: ThemedChipProps) {
-  const theme = useSafeTheme();
-  const { currentUITheme } = useUITheme();
-  const { colors, isDark } = theme;
+  const { currentTheme, temperature, colorMode } = useUITheme();
+  const colors = currentTheme.colors[colorMode];
 
   return (
     <motion.button
@@ -28,11 +26,13 @@ export function ThemedChip({ active = false, className, children, ...props }: Th
         className
       )}
       style={{
-        backgroundColor: active ? currentUITheme.chip?.activeBackground || colors.primary : currentUITheme.chip?.background || 'transparent',
-        borderColor: active ? currentUITheme.chip?.activeBackground || colors.primary : colors.border,
-        color: active ? currentUITheme.chip?.textColor || (isDark ? '#000' : '#fff') : colors.text,
-        borderRadius: currentUITheme.chip?.borderRadius || '1.5rem',
-        opacity: active ? 1 : 0.7
+        backgroundColor: active ? colors.primary : `${colors.primary}40`,
+        borderColor: active ? colors.primary : colors.border.light,
+        color: active ? colors.text.onPrimary : colors.text.primary,
+        borderRadius: currentTheme.styles.borderRadius.sm,
+        opacity: active ? 1 : 0.7,
+        transition: currentTheme.animations.durations.normal + ' ' + currentTheme.animations.easings.standard,
+        transform: `scale(${1 + temperature * 0.01})`,
       }}
       {...(props as any)}
     >
@@ -43,9 +43,9 @@ export function ThemedChip({ active = false, className, children, ...props }: Th
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md border-2" 
-            style={{ borderColor: currentUITheme.chip.activeBackground }}
+            style={{ borderColor: colors.primary }}
           >
-            <Check className="w-3 h-3" style={{ color: currentUITheme.chip.activeBackground }} strokeWidth={4} />
+            <Check className="w-3 h-3" style={{ color: colors.primary }} strokeWidth={4} />
           </motion.div>
         )}
       </AnimatePresence>

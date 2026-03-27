@@ -61,7 +61,6 @@ export function AuthScreen() {
             access_type: 'offline',
             prompt: 'consent',
           },
-          useFedCM: true,
         },
       });
       if (error) throw error;

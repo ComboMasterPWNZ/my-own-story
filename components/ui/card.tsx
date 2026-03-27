@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -11,8 +11,8 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, children, style, ...props }, ref) => {
-    const theme = useSafeTheme();
-    const { colors, borderRadius } = theme;
+    const { currentTheme, colorMode } = useUITheme();
+    const colors = currentTheme.colors[colorMode];
 
     return (
       <div
@@ -24,8 +24,8 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         style={{
           backgroundColor: colors.card,
           borderColor: `${colors.primary}20`,
-          color: colors.text,
-          borderRadius: borderRadius?.card || '2.5rem',
+          color: colors.text.primary,
+          borderRadius: currentTheme.styles.borderRadius.lg || '2.5rem',
           ...style
         }}
         {...props}

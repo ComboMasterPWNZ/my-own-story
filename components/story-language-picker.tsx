@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTheme } from '@/context/ThemeContext';
+import { useUITheme } from '@/context/UIThemeContext';
 import { useUser } from '@/hooks/useUser';
 import { createClient } from '@/lib/supabase/client';
 import { BookOpen, ChevronRight, Check, X } from 'lucide-react';
@@ -23,13 +23,14 @@ const languages = [
 ];
 
 export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerProps) {
-  const { currentTheme } = useTheme();
+  const { currentTheme, colorMode } = useUITheme();
   const { user } = useUser();
   const supabase = createClient();
   const t = useTranslations('StoryLanguage');
   const [selectedLanguage, setSelectedLanguage] = useState('ru');
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const colors = currentTheme.colors[colorMode];
 
   useEffect(() => {
     if (user) {
@@ -76,25 +77,25 @@ export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerPro
   return (
     <>
       <Card 
-        className={cn("p-4 flex items-center justify-between cursor-pointer group border-2 rounded-[2rem]", currentTheme.cardStyle)}
+        className={cn("p-4 flex items-center justify-between cursor-pointer group border-2 rounded-[2rem]")}
         onClick={() => setIsOpen(true)}
       >
         <div className="flex items-center gap-4">
           <div 
             className="w-14 h-14 rounded-full flex items-center justify-center border-4"
             style={{ 
-              borderColor: currentTheme.colors.primary,
-              backgroundColor: `${currentTheme.colors.primary}20`
+              borderColor: colors.primary,
+              backgroundColor: `${colors.primary}20`
             }}
           >
-            <BookOpen className="w-6 h-6" style={{ color: currentTheme.colors.primary }} />
+            <BookOpen className="w-6 h-6" style={{ color: colors.primary }} />
           </div>
           <div className="text-left">
-            <p className="font-black text-lg">{t(selectedLang.code)}</p>
-            <p className="text-xs font-bold opacity-40 uppercase tracking-wider">{t(`${selectedLang.code}Desc`)}</p>
+            <p className="font-black text-lg" style={{ color: colors.text.primary }}>{t(selectedLang.code)}</p>
+            <p className="text-xs font-bold opacity-40 uppercase tracking-wider" style={{ color: colors.text.secondary }}>{t(`${selectedLang.code}Desc`)}</p>
           </div>
         </div>
-        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
+        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" style={{ color: colors.text.secondary }} />
       </Card>
 
       <AnimatePresence>
@@ -116,33 +117,34 @@ export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerPro
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-md max-h-[85vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col"
               style={{ 
-                backgroundColor: currentTheme?.colors?.background || '#1A1A3D',
-                border: `2px solid ${currentTheme?.colors?.primary || '#FFB6C1'}40`
+                backgroundColor: colors.background,
+                border: `2px solid ${colors.primary}40`
               }}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: currentTheme?.colors?.primary || '#FFB6C1' + '30' }}>
+              <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: colors.primary + '30' }}>
                 <div className="flex items-center gap-3">
                   <div 
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: `linear-gradient(135deg, ${currentTheme?.colors?.primary || '#FFB6C1'}, ${currentTheme?.colors?.secondary || '#FFD700'})` }}
+                    style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})` }}
                   >
-                    <BookOpen className="w-5 h-5 text-white" />
+                    <BookOpen className="w-5 h-5" style={{ color: colors.text.onPrimary }} />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold" style={{ color: colors.text.primary }}>
                       {t('label')}
                     </h2>
-                    <p className="text-xs text-white/50">
+                    <p className="text-xs" style={{ color: colors.text.secondary }}>
                       {t('description')}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                  className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                  style={{ backgroundColor: colors.primary, color: colors.text.onPrimary }}
                 >
-                  <X className="w-4 h-4 text-white" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
@@ -159,27 +161,31 @@ export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerPro
                       className={cn(
                         "w-full p-4 rounded-2xl border-2 transition-all duration-200 text-left flex items-center gap-4 relative overflow-hidden",
                         selectedLanguage === lang.code
-                          ? "border-white shadow-lg"
-                          : "border-white/10 hover:border-white/30"
+                          ? "shadow-lg"
+                          : "hover:border-opacity-30"
                       )}
                       style={{ 
                         backgroundColor: selectedLanguage === lang.code 
-                          ? `${currentTheme.colors.primary}20` 
-                          : 'rgba(255,255,255,0.03)'
+                          ? `${colors.primary}20` 
+                          : `${colors.surface}20`,
+                        borderColor: selectedLanguage === lang.code 
+                          ? colors.primary 
+                          : `${colors.border}10`,
+                        color: colors.text.primary
                       }}
                     >
                       {/* Flag */}
                       <div 
                         className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-2xl"
-                        style={{ backgroundColor: selectedLanguage === lang.code ? `${currentTheme.colors.primary}40` : 'rgba(255,255,255,0.1)' }}
+                        style={{ backgroundColor: selectedLanguage === lang.code ? `${colors.primary}40` : `${colors.surface}40` }}
                       >
                         {lang.flag}
                       </div>
                       
                       {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <span className="block text-sm font-bold text-white truncate">{t(lang.code)}</span>
-                        <span className="text-xs text-white/50">{t(`${lang.code}Desc`)}</span>
+                        <span className="block text-sm font-bold truncate">{t(lang.code)}</span>
+                        <span className="text-xs" style={{ color: colors.text.secondary }}>{t(`${lang.code}Desc`)}</span>
                       </div>
                       
                       {/* Check */}
@@ -187,9 +193,10 @@ export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerPro
                         <motion.div 
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0"
+                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                          style={{ backgroundColor: colors.primary, color: colors.text.onPrimary }}
                         >
-                          <Check className="w-5 h-5 text-black" />
+                          <Check className="w-5 h-5" />
                         </motion.div>
                       )}
                     </motion.button>
@@ -198,14 +205,15 @@ export function StoryLanguagePicker({ onLanguageChange }: StoryLanguagePickerPro
               </div>
 
               {/* Footer */}
-              <div className="p-4 border-t" style={{ borderColor: currentTheme?.colors?.primary || '#FFB6C1' + '30' }}>
+              <div className="p-4 border-t" style={{ borderColor: colors.primary + '30' }}>
                 <motion.button
                   onClick={() => setIsOpen(false)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 rounded-2xl font-bold text-white text-sm shadow-lg"
+                  className="w-full py-3 rounded-2xl font-bold text-sm shadow-lg"
                   style={{ 
-                    background: `linear-gradient(135deg, ${currentTheme?.colors?.primary || '#FFB6C1'}, ${currentTheme?.colors?.secondary || '#FFD700'})`
+                    background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+                    color: colors.text.onPrimary
                   }}
                 >
                   {t('done')}

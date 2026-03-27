@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
 import { useUITheme } from '@/context/UIThemeContext';
 
 interface ThemedCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -11,9 +10,8 @@ interface ThemedCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function ThemedCard({ className, children, style, ...props }: ThemedCardProps) {
-  const theme = useSafeTheme();
-  const { currentUITheme } = useUITheme();
-  const { colors } = theme;
+  const { currentTheme, temperature, colorMode } = useUITheme();
+  const colors = currentTheme.colors[colorMode];
 
   return (
     <div
@@ -22,14 +20,13 @@ export function ThemedCard({ className, children, style, ...props }: ThemedCardP
         className
       )}
       style={{
-        background: currentUITheme.card?.background || colors.card,
-        borderColor: currentUITheme.card?.border?.includes('linear-gradient') 
-          ? 'transparent' 
-          : currentUITheme.card?.border || `${colors.primary}20`,
-        color: colors.text,
-        borderRadius: currentUITheme.card?.borderRadius || '2.5rem',
-        boxShadow: currentUITheme.card?.shadow || '0 10px 20px rgba(0,0,0,0.1)',
-        borderImage: currentUITheme.card?.borderImage,
+        background: colors.card,
+        borderColor: colors.border.light,
+        color: colors.text.primary,
+        borderRadius: currentTheme.styles.borderRadius.md,
+        boxShadow: currentTheme.styles.shadows.md,
+        transition: currentTheme.animations.durations.normal + ' ' + currentTheme.animations.easings.standard,
+        transform: `scale(${1 + temperature * 0.02})`,
         ...style
       }}
       {...props}

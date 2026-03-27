@@ -5,9 +5,9 @@ import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { ThemeProvider } from '@/context/ThemeContext';
 import { UIThemeProvider } from '@/context/UIThemeContext';
 import { FloatingElements } from '@/components/floating-elements';
+import { ThemeBackground } from '@/components/ThemeBackground';
 import { createClient } from '@/lib/supabase/server';
 import '../globals.css';
 
@@ -76,18 +76,17 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
-        <ThemeProvider>
-          <UIThemeProvider>
-            <FloatingElements />
-            <ToastProvider>
-              <NextIntlClientProvider messages={messages}>
-                {children}
-              </NextIntlClientProvider>
-              <ToastContainer />
-            </ToastProvider>
-          </UIThemeProvider>
-        </ThemeProvider>
+        <body>
+        <UIThemeProvider>
+          <ThemeBackground />
+          <FloatingElements />
+          <ToastProvider>
+            <NextIntlClientProvider messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+            <ToastContainer />
+          </ToastProvider>
+        </UIThemeProvider>
       </body>
     </html>
   );

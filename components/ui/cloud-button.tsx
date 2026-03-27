@@ -3,12 +3,12 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import { ThemeConfig } from '@/lib/themes';
+import { UITheme } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface CloudButtonProps {
   onClick: () => void;
-  currentTheme: ThemeConfig;
+  currentTheme: UITheme;
   profile: any;
   className?: string;
 }
@@ -37,14 +37,14 @@ export function CloudButton({ onClick, currentTheme, profile, className }: Cloud
       className={cn(
         "relative w-full group py-10 px-8 flex flex-col items-center justify-center transition-all duration-500",
         isAnimating && "pointer-events-none",
+        "bg-gradient-to-br from-blue-500 to-purple-600",
         className
       )}
       style={{
-        background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
         borderRadius: '60% 40% 50% 50% / 60% 50% 60% 40%',
         boxShadow: `
-          0 20px 40px -10px ${currentTheme.primary}60,
-          0 10px 20px -5px ${currentTheme.secondary}40,
+          0 20px 40px -10px rgba(59, 130, 246, 0.6),
+          0 10px 20px -5px rgba(147, 51, 234, 0.4),
           inset 0 -8px 15px rgba(0,0,0,0.1),
           inset 0 8px 15px rgba(255,255,255,0.4)
         `,

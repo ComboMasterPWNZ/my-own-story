@@ -3,13 +3,13 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Book, BookOpen, Sparkles } from 'lucide-react';
-import { ThemeConfig } from '@/lib/themes';
+import { UITheme } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
 interface MagicBookButtonProps {
   onClick: () => void;
-  currentTheme: ThemeConfig;
+  currentTheme: UITheme;
   profile: any;
   className?: string;
 }
@@ -57,10 +57,9 @@ export function MagicBookButton({ onClick, currentTheme, profile, className }: M
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1.2 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute inset-0 pointer-events-none blur-[20px] rounded-full"
+            className="absolute inset-0 pointer-events-none blur-[20px] rounded-full bg-blue-500/20"
             style={{ 
-              backgroundColor: `${currentTheme.colors.primary}20`,
-              boxShadow: `0 0 20px 5px ${currentTheme.colors.primary}80`
+              boxShadow: `0 0 20px 5px rgba(59, 130, 246, 0.8)`
             }}
           />
         )}
@@ -87,8 +86,7 @@ export function MagicBookButton({ onClick, currentTheme, profile, className }: M
               >
                 <BookOpen 
                   size={80} 
-                  className="drop-shadow-[0_0_15px_rgba(255,215,0,0.6)]"
-                  style={{ color: currentTheme.colors.primary }}
+                  className="drop-shadow-[0_0_15px_rgba(255,215,0,0.6)] text-blue-500"
                 />
               </motion.div>
             ) : (
@@ -101,8 +99,7 @@ export function MagicBookButton({ onClick, currentTheme, profile, className }: M
               >
                 <Book 
                   size={80} 
-                  className="drop-shadow-lg"
-                  style={{ color: currentTheme.colors.primary }}
+                  className="drop-shadow-lg text-blue-500"
                 />
               </motion.div>
             )}
@@ -136,9 +133,8 @@ export function MagicBookButton({ onClick, currentTheme, profile, className }: M
           animate={{ 
             opacity: isActive ? 1 : 0.6,
             scale: isActive ? 1.05 : 1,
-            color: isActive ? currentTheme.colors.primary : currentTheme.colors.text
           }}
-          className="text-2xl sm:text-3xl font-black tracking-tight block transition-colors duration-300"
+          className="text-2xl sm:text-3xl font-black tracking-tight block transition-colors duration-300 text-blue-600"
         >
           {t('createStory')}
         </motion.span>
@@ -146,8 +142,7 @@ export function MagicBookButton({ onClick, currentTheme, profile, className }: M
         {profile?.subscription_tier !== 'premium' && (
           <motion.div 
             animate={{ opacity: isActive ? 1 : 0.4 }}
-            className="flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]"
-            style={{ color: currentTheme.colors.text }}
+            className="flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600"
           >
             <span>{t('text')}: {Math.max(0, 3 - (profile?.free_generations_used || 0))}</span>
             <div className="w-1 h-1 rounded-full bg-current opacity-30" />

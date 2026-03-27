@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ThemedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -10,34 +10,51 @@ interface ThemedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   theme?: any;
 }
 
-export function ThemedInput({ label, error, className, ...props }: ThemedInputProps) {
-  const theme = useSafeTheme();
-  const { colors, borderRadius } = theme;
+export function ThemedInput({ 
+  label, 
+  error, 
+  className, 
+  style,
+  ...props 
+}: ThemedInputProps) {
+  const { currentTheme, temperature, colorMode } = useUITheme();
+  const colors = currentTheme.colors[colorMode];
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full">
       {label && (
         <label 
-          className="ml-2 text-sm font-bold opacity-60" 
-          style={{ color: colors.text }}
+          className="block mb-2 font-medium"
+          style={{ color: colors.text.primary }}
         >
           {label}
         </label>
       )}
       <input
         className={cn(
-          "flex h-14 w-full border-2 px-6 py-4 text-base font-bold transition-all focus:outline-none",
+          "w-full px-4 py-3 border-2 transition-all duration-300 focus:outline-none",
           className
         )}
         style={{
           backgroundColor: colors.card,
-          borderColor: error ? '#ef4444' : `${colors.primary}40`,
-          color: colors.text,
-          borderRadius: borderRadius?.input || '1.5rem'
+          borderColor: error ? colors.error : colors.border.light,
+          color: colors.text.primary,
+          borderRadius: currentTheme.styles.borderRadius.md,
+          boxShadow: `0 4px 0 ${colors.border.light}40`,
+          transition: currentTheme.animations.durations.normal + ' ' + currentTheme.animations.easings.standard,
+          transform: `scale(${1 + temperature * 0.01})`,
+          ...style
         }}
         {...props}
       />
-      {error && <p className="ml-2 text-xs font-bold text-red-500">{error}</p>}
+      {error && (
+        <p 
+          className="mt-1 text-sm"
+          style={{ color: colors.error }}
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 }

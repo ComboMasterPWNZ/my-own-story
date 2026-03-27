@@ -10,10 +10,10 @@ import { Modal } from './ui/modal';
 import { ThemedButton } from './ui/themed-button';
 import { ThemedInput } from './ui/themed-input';
 import { ThemedChip } from './ui/themed-chip';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
 import { useToast } from '@/context/toast-context';
 import { ConfirmModal } from './ui/confirm-modal';
 import { useTranslations } from 'next-intl';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ChildProfileModalProps {
   isOpen: boolean;
@@ -25,8 +25,9 @@ interface ChildProfileModalProps {
 }
 
 export function ChildProfileModal({ isOpen, onClose, onSuccess, child, userId, currentTheme }: ChildProfileModalProps) {
-  const fallbackTheme = useSafeTheme();
-  const theme = currentTheme || fallbackTheme;
+  const { currentTheme: uiTheme, colorMode } = useUITheme();
+  const theme = currentTheme || uiTheme;
+  const colors = theme.colors[colorMode];
   const { showToast } = useToast();
   const t = useTranslations('ChildModal');
   const supabase = createClient();

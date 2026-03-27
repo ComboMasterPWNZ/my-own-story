@@ -2,7 +2,7 @@
 
 import { Modal } from './modal';
 import { ThemedButton } from './themed-button';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -27,7 +27,8 @@ export function ConfirmModal({
   isLoading = false,
   variant = 'danger'
 }: ConfirmModalProps) {
-  const theme = useSafeTheme();
+  const { currentTheme, colorMode } = useUITheme();
+  const colors = currentTheme.colors[colorMode];
   
   return (
     <Modal
@@ -39,7 +40,7 @@ export function ConfirmModal({
       <div className="space-y-8">
         <p 
           className="text-lg font-bold opacity-80 leading-relaxed" 
-          style={{ color: theme.colors.text }}
+          style={{ color: colors.text.primary }}
         >
           {message}
         </p>

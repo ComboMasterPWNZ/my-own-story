@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/client';
 import { Plus, Heart, User, BookOpen, Search, Palette, Sparkles, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { ThemeConfig } from '@/lib/themes';
 import { ImagePlaceholder } from './image-placeholder';
 import { ThemedButton } from './ui/themed-button';
 import { ThemedCard } from './ui/themed-card';
@@ -13,21 +12,24 @@ import { Skeleton } from './ui/skeleton';
 import { EmptyState } from './empty-state';
 import { MagicBookButton } from './ui/magic-book-button';
 import { useTranslations } from 'next-intl';
+import { useUITheme } from '@/context/UIThemeContext';
+import { FairyDust } from './ui/fairy-dust';
 
 interface HomeScreenProps {
   profile: any;
-  currentTheme: ThemeConfig;
   onNavigate: (screen: 'home' | 'create' | 'profile') => void;
   onSelectStory: (id: string) => void;
   onUpdateProfile: (updated: any) => void;
 }
 
-export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, onUpdateProfile }: HomeScreenProps) {
+export function HomeScreen({ profile, onNavigate, onSelectStory, onUpdateProfile }: HomeScreenProps) {
   const t = useTranslations('Home');
+  const { currentUITheme, colorMode, fairyDustEnabled } = useUITheme();
   const [stories, setStories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'favorites'>('all');
   const supabase = createClient();
+  const colors = currentUITheme.colors[colorMode];
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -68,11 +70,20 @@ export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, o
     e.stopPropagation();
     const newStories = stories.map(s => s.id === storyId ? { ...s, is_favorite: !isFavorite } : s);
     setStories(newStories);
-    await supabase.from('stories').update({ is_favorite: !isFavorite } as any).eq('id', storyId);
+    // @ts-ignore
+    await supabase.from('stories').update({ is_favorite: !isFavorite }).eq('id', storyId);
   };
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Сказочная пыль */}
+      <FairyDust 
+        enabled={fairyDustEnabled}
+        intensity={0.7}
+        behavior="float"
+        maxParticles={25}
+      />
+      
       <main className="flex-1 p-6 pb-24 relative z-10">
         {/* Guide Character (Mascot) */}
         <motion.div 
@@ -100,28 +111,34 @@ export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, o
         {/* Create Button */}
         <MagicBookButton 
           onClick={() => onNavigate('create')}
-          currentTheme={currentTheme}
+          currentTheme={currentUITheme}
           profile={profile}
           className="mb-10"
         />
 
         {/* Tabs */}
         <div 
-          className="flex gap-3 mb-8 p-2 rounded-[2.5rem] backdrop-blur-md border border-white/10"
-          style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
+          className="flex gap-3 mb-8 p-2 rounded-[2.5rem] backdrop-blur-md border"
+          style={{ 
+            backgroundColor: `${colors.card}50`,
+            borderColor: `${colors.primary}20`
+          }}
         >
             <button 
               onClick={() => setActiveTab('all')}
               className={cn(
                 "flex-1 py-4 rounded-[2rem] text-sm font-black transition-all duration-300",
                 activeTab === 'all' 
-                  ? "bg-white text-black shadow-xl scale-[1.02]" 
-                  : "text-white/40 hover:text-white/60"
+                  ? "shadow-xl scale-[1.02]" 
+                  : "opacity-60 hover:opacity-80"
               )}
               style={activeTab === 'all' ? { 
-                backgroundColor: currentTheme.colors.primary, 
-                color: currentTheme.isDark ? '#000' : '#fff' 
-              } : {}}
+                backgroundColor: colors.primary, 
+                color: colors.text.onPrimary
+              } : {
+                backgroundColor: `${colors.card}80`,
+                color: colors.text.primary
+              }}
             >
               {t('allStories')}
             </button>
@@ -130,13 +147,16 @@ export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, o
               className={cn(
                 "flex-1 py-4 rounded-[2rem] text-sm font-black transition-all duration-300",
                 activeTab === 'favorites' 
-                  ? "bg-white text-black shadow-xl scale-[1.02]" 
-                  : "text-white/40 hover:text-white/60"
+                  ? "shadow-xl scale-[1.02]" 
+                  : "opacity-60 hover:opacity-80"
               )}
               style={activeTab === 'favorites' ? { 
-                backgroundColor: currentTheme.colors.primary, 
-                color: currentTheme.isDark ? '#000' : '#fff' 
-              } : {}}
+                backgroundColor: colors.primary, 
+                color: colors.text.onPrimary
+              } : {
+                backgroundColor: `${colors.card}80`,
+                color: colors.text.primary
+              }}
             >
               {t('favorites')}
             </button>
@@ -153,7 +173,7 @@ export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, o
               className="grid grid-cols-1 sm:grid-cols-2 gap-6"
             >
               {[1, 2, 3, 4].map((i) => (
-                <ThemedCard key={i} theme={currentTheme} className="p-0 overflow-hidden border-none shadow-lg">
+                <ThemedCard key={i} theme={currentUITheme} className="p-0 overflow-hidden border-none shadow-lg">
                   <Skeleton className="aspect-[16/10] w-full rounded-none" />
                   <div className="p-5 space-y-3">
                     <Skeleton className="h-6 w-3/4" />
@@ -184,7 +204,7 @@ export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, o
                     className="cursor-pointer"
                   >
                     <ThemedCard 
-                      theme={currentTheme}
+                      theme={currentUITheme}
                       className="p-0 overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
                     >
                       <div className="aspect-[16/10] relative overflow-hidden shrink-0">
@@ -265,7 +285,6 @@ export function HomeScreen({ profile, currentTheme, onNavigate, onSelectStory, o
           ) : (
             <EmptyState 
               variant={activeTab} 
-              currentTheme={currentTheme} 
               onCreateClick={() => onNavigate('create')}
             />
           )}

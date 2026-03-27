@@ -9,7 +9,7 @@ export function ToastContainer() {
   
   return (
     <div className="fixed top-4 left-0 right-0 flex flex-col items-center gap-2 z-[100] pointer-events-none">
-      <AnimatePresence mode="multiple">
+      <AnimatePresence mode="wait">
         {toasts.map(toast => (
           <div key={toast.id} className="pointer-events-auto">
             <Toast

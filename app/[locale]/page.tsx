@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useUser } from '@/hooks/useUser';
-import { useTheme } from '@/context/ThemeContext';
+import { useUITheme } from '@/context/UIThemeContext';
 import { HomeScreen } from '@/components/home-screen';
 import { AuthScreen } from '@/components/auth-screen';
 import { CreateStoryScreen } from '@/components/create-story-screen';
@@ -20,13 +20,14 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
   const t = useTranslations('App');
   const navT = useTranslations('Profile');
   const { user, isLoading: authLoading } = useUser();
-  const { currentTheme } = useTheme();
+  const { currentTheme, colorMode } = useUITheme();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState<'home' | 'create' | 'profile' | 'reader'>('home');
   const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
   const supabase = createClient();
   const router = useRouter();
+  const colors = currentTheme.colors[colorMode] || currentTheme.colors.light;
 
   useEffect(() => {
     async function fetchProfile() {
@@ -82,9 +83,8 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
           animate={{ opacity: 1 }}
           className="min-h-screen transition-colors duration-500 pb-24"
           style={{ 
-            backgroundColor: currentTheme.colors.background,
-            color: currentTheme.colors.text,
-            backgroundImage: currentTheme.pattern || 'none'
+            backgroundColor: colors.background,
+            color: colors.text.primary,
           }}
         >
           <Header 
@@ -102,7 +102,6 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
             {currentScreen === 'home' && (
               <HomeScreen 
                 profile={profile} 
-                currentTheme={currentTheme}
                 onNavigate={handleNavigate}
                 onSelectStory={handleSelectStory}
                 onUpdateProfile={setProfile}
@@ -112,7 +111,6 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
             {currentScreen === 'create' && (
               <CreateStoryScreen 
                 profile={profile}
-                currentTheme={currentTheme}
                 onBack={() => handleNavigate('home')}
                 onComplete={handleSelectStory}
                 onStartLoading={() => setLoading(true)}
@@ -122,7 +120,6 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
             {currentScreen === 'profile' && (
               <ProfileScreen 
                 profile={profile}
-                currentTheme={currentTheme}
                 onBack={() => handleNavigate('home')}
                 onUpdateProfile={setProfile}
               />
@@ -131,7 +128,6 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
             {currentScreen === 'reader' && selectedStoryId && (
               <StoryReaderScreen 
                 storyId={selectedStoryId}
-                currentTheme={currentTheme}
                 onBack={() => handleNavigate('home')}
               />
             )}
@@ -145,9 +141,9 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
                   onClick={() => handleNavigate('home')}
                   className={`flex-1 py-3 rounded-[2rem] flex flex-col items-center gap-1 transition-all ${currentScreen === 'home' ? 'shadow-lg' : 'opacity-60'}`}
                   style={currentScreen === 'home' ? { 
-                    backgroundColor: currentTheme.colors.primary, 
-                    color: currentTheme.isDark ? '#000' : '#fff' 
-                  } : { color: currentTheme.colors.text }}
+                    backgroundColor: colors.primary, 
+                    color: colors.text.onPrimary
+                  } : { color: colors.text.primary }}
                 >
                   <span className="text-xl">🏠</span>
                   <span className="text-[10px] font-bold uppercase tracking-tighter">{navT('stories')}</span>
@@ -157,9 +153,9 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
                   onClick={() => handleNavigate('create')}
                   className={`flex-1 py-3 rounded-[2rem] flex flex-col items-center gap-1 transition-all ${currentScreen === 'create' ? 'shadow-lg' : 'opacity-60'}`}
                   style={currentScreen === 'create' ? { 
-                    backgroundColor: currentTheme.colors.primary, 
-                    color: currentTheme.isDark ? '#000' : '#fff' 
-                  } : { color: currentTheme.colors.text }}
+                    backgroundColor: colors.primary, 
+                    color: colors.text.onPrimary
+                  } : { color: colors.text.primary }}
                 >
                   <span className="text-xl">✨</span>
                   <span className="text-[10px] font-bold uppercase tracking-tighter">{t('title')}</span>
@@ -169,9 +165,9 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
                   onClick={() => handleNavigate('profile')}
                   className={`flex-1 py-3 rounded-[2rem] flex flex-col items-center gap-1 transition-all ${currentScreen === 'profile' ? 'shadow-lg' : 'opacity-60'}`}
                   style={currentScreen === 'profile' ? { 
-                    backgroundColor: currentTheme.colors.primary, 
-                    color: currentTheme.isDark ? '#000' : '#fff' 
-                  } : { color: currentTheme.colors.text }}
+                    backgroundColor: colors.primary, 
+                    color: colors.text.onPrimary
+                  } : { color: colors.text.primary }}
                 >
                   <span className="text-xl">👤</span>
                   <span className="text-[10px] font-bold uppercase tracking-tighter">{navT('myChildren')}</span>

@@ -3,13 +3,13 @@
 import { motion } from 'framer-motion';
 import { AlertCircle, RefreshCw, CloudOff } from 'lucide-react';
 import { Button } from './ui/button';
-import { ThemeConfig } from '@/lib/themes';
+import { UITheme } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface ErrorMessageProps {
   message?: string;
   onRetry?: () => void;
-  currentTheme?: ThemeConfig;
+  currentTheme?: UITheme;
   className?: string;
 }
 

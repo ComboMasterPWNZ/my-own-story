@@ -6,11 +6,11 @@ import { Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/useUser';
 import { createClient } from '@/lib/supabase/client';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface LanguagePickerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentTheme: any;
 }
 
 const LANGUAGES = [
@@ -18,10 +18,12 @@ const LANGUAGES = [
   { id: 'en', label: 'English', flag: '🇺🇸', native: 'English' }
 ];
 
-export function LanguagePickerModal({ isOpen, onClose, currentTheme }: LanguagePickerModalProps) {
+export function LanguagePickerModal({ isOpen, onClose }: LanguagePickerModalProps) {
   const { user } = useUser();
+  const { currentTheme, colorMode } = useUITheme();
   const supabase = createClient();
   const [currentLocale, setCurrentLocale] = useState('ru');
+  const colors = currentTheme.colors[colorMode];
 
   useEffect(() => {
     // Получаем текущую локаль из URL
@@ -97,25 +99,26 @@ export function LanguagePickerModal({ isOpen, onClose, currentTheme }: LanguageP
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="relative w-full max-w-md overflow-hidden rounded-3xl shadow-2xl"
             style={{ 
-              backgroundColor: currentTheme?.colors?.background || '#1A1A3D',
-              border: `2px solid ${currentTheme?.colors?.primary || '#FFB6C1'}40`
+              backgroundColor: colors.background,
+              border: `2px solid ${colors.primary}40`
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: currentTheme?.colors?.primary || '#FFB6C1' + '30' }}>
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: colors.primary + '30' }}>
               <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold" style={{ color: colors.text.primary }}>
                       Язык
                     </h2>
-                    <p className="text-xs text-white/50">
+                    <p className="text-xs" style={{ color: colors.text.secondary }}>
                       Выберите язык интерфейса
                     </p>
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: colors.primary, color: colors.text.onPrimary }}
               >
-                <X className="w-4 h-4 text-white" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -131,27 +134,31 @@ export function LanguagePickerModal({ isOpen, onClose, currentTheme }: LanguageP
                     className={cn(
                       "w-full p-4 rounded-2xl border-2 transition-all duration-200 text-left flex items-center gap-4 relative overflow-hidden",
                       currentLocale === lang.id
-                        ? "border-white shadow-lg"
-                        : "border-white/10 hover:border-white/30"
+                        ? "shadow-lg"
+                        : "hover:border-opacity-30"
                     )}
                       style={{ 
                         backgroundColor: currentLocale === lang.id 
-                          ? `${currentTheme?.colors?.primary || '#FFB6C1'}20` 
-                          : 'rgba(255,255,255,0.03)'
+                          ? `${colors.primary}20` 
+                          : `${colors.surface}20`,
+                        borderColor: currentLocale === lang.id 
+                          ? colors.primary 
+                          : `${colors.border}10`,
+                        color: colors.text.primary
                       }}
                   >
                     {/* Flag */}
                     <div 
                       className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-2xl"
-                      style={{ backgroundColor: currentLocale === lang.id ? `${currentTheme?.colors?.primary || '#FFB6C1'}40` : 'rgba(255,255,255,0.1)' }}
+                      style={{ backgroundColor: currentLocale === lang.id ? `${colors.primary}40` : `${colors.surface}40` }}
                     >
                       {lang.flag}
                     </div>
                     
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <span className="block text-sm font-bold text-white truncate">{lang.label}</span>
-                      <span className="text-xs text-white/50">{lang.native}</span>
+                      <span className="block text-sm font-bold truncate">{lang.label}</span>
+                      <span className="text-xs" style={{ color: colors.text.secondary }}>{lang.native}</span>
                     </div>
                     
                     {/* Check */}
@@ -159,9 +166,10 @@ export function LanguagePickerModal({ isOpen, onClose, currentTheme }: LanguageP
                       <motion.div 
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0"
+                        className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: colors.primary, color: colors.text.onPrimary }}
                       >
-                        <Check className="w-5 h-5 text-black" />
+                        <Check className="w-5 h-5" />
                       </motion.div>
                     )}
                   </motion.button>
@@ -170,14 +178,15 @@ export function LanguagePickerModal({ isOpen, onClose, currentTheme }: LanguageP
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t" style={{ borderColor: currentTheme?.colors?.primary || '#FFB6C1' + '30' }}>
+            <div className="p-4 border-t" style={{ borderColor: colors.primary + '30' }}>
               <motion.button
                 onClick={onClose}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 rounded-2xl font-bold text-white text-sm shadow-lg"
+                className="w-full py-3 rounded-2xl font-bold text-sm shadow-lg"
                 style={{ 
-                  background: `linear-gradient(135deg, ${currentTheme?.colors?.primary || '#FFB6C1'}, ${currentTheme?.colors?.secondary || '#FFD700'})`
+                  background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+                  color: colors.text.onPrimary
                 }}
               >
                 Закрыть

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <radialGradient id="spaceGrad" cx="50%" cy="50%" r="100%">
+      <stop offset="0%" stop-color="#1A0B2E"/>
+      <stop offset="100%" stop-color="#0B0B1A"/>
+    </radialGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#spaceGrad)"/>
+  <circle cx="200" cy="300" r="4" fill="white" opacity="0.8"/>
+  <circle cx="1500" cy="800" r="6" fill="white" opacity="0.8"/>
+  <circle cx="900" cy="400" r="2" fill="white" opacity="0.8"/>
+  <!-- больше звёзд можно добавить по желанию -->
+</svg>

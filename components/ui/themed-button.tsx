@@ -4,8 +4,8 @@ import * as React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-import { useSafeTheme } from '@/hooks/useSafeTheme';
 import { useUITheme } from '@/context/UIThemeContext';
+import { Sparkles } from '@/components/Sparkles';
 
 interface ThemedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -22,23 +22,28 @@ export function ThemedButton({
   children, 
   ...props 
 }: ThemedButtonProps) {
-  const theme = useSafeTheme();
-  const { currentUITheme } = useUITheme();
-  const { colors, borderRadius, isDark, buttonStyle } = theme;
+  const { currentTheme, temperature, colorMode } = useUITheme();
+  const colors = currentTheme.colors[colorMode];
+  const animations = currentTheme.animations;
+
+  // Создаем градиент для кнопки
+  const getGradient = () => {
+    return `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`;
+  };
 
   const getStyles = () => {
     switch (variant) {
       case 'primary':
         return {
-          background: currentUITheme.button ? `linear-gradient(135deg, ${currentUITheme.button.gradientStart}, ${currentUITheme.button.gradientEnd})` : `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
-          color: currentUITheme.button?.textColor || (isDark ? '#000' : '#fff'),
+          background: getGradient(),
+          color: colors.text.onPrimary,
           borderColor: 'transparent',
-          boxShadow: currentUITheme.button?.shadow || '0 8px 0 rgba(0,0,0,0.2)',
+          boxShadow: `0 8px 0 ${colors.secondary}80`,
         };
       case 'secondary':
         return {
           backgroundColor: colors.secondary,
-          color: '#000',
+          color: colors.text.onSecondary,
           borderColor: colors.secondary,
         };
       case 'outline':
@@ -51,14 +56,14 @@ export function ThemedButton({
       case 'ghost':
         return {
           backgroundColor: 'transparent',
-          color: colors.text,
+          color: colors.text.primary,
           borderColor: 'transparent',
         };
       case 'danger':
         return {
           backgroundColor: 'transparent',
-          color: '#ef4444',
-          borderColor: '#ef4444',
+          color: colors.error,
+          borderColor: colors.error,
           borderWidth: '2px',
         };
       default:
@@ -73,32 +78,37 @@ export function ThemedButton({
   };
 
   return (
-    <motion.button
-      whileTap={{ scale: 0.98, y: 2 }}
-      whileHover={{ 
-        scale: parseFloat(currentUITheme.button.hoverScale),
-        y: -2 
-      }}
-      className={cn(
-        "inline-flex items-center justify-center gap-2 font-black transition-all shadow-lg disabled:opacity-50 disabled:pointer-events-none",
-        buttonStyle, // Применяем специфичные для темы стили (тени, границы)
-        sizeClasses[size],
-        className
-      )}
-      style={{
-        ...getStyles(),
-        borderRadius: currentUITheme.button.borderRadius,
-        transition: currentUITheme.animation.transition,
-      }}
-      disabled={loading || props.disabled}
-      {...(props as any)}
-    >
-      {loading ? (
-        <>
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="opacity-0">{children}</span>
-        </>
-      ) : children}
-    </motion.button>
+    <Sparkles>
+      <motion.button
+        whileTap={{ scale: 0.98, y: 2 }}
+        whileHover={{ 
+          scale: 1 + temperature * 0.05,
+          y: -2 
+        }}
+        className={cn(
+          "inline-flex items-center justify-center gap-2 font-black transition-all shadow-lg disabled:opacity-50 disabled:pointer-events-none",
+          sizeClasses[size],
+          className
+        )}
+        style={{
+          ...getStyles(),
+          borderRadius: currentTheme.styles.borderRadius.md,
+          transition: currentTheme.animations.durations.normal + ' ' + currentTheme.animations.easings.standard,
+          transform: `scale(${1 + temperature * 0.05})`,
+          cursor: 'pointer',
+          border: 'none',
+          fontWeight: 'bold',
+        }}
+        disabled={loading || props.disabled}
+        {...(props as any)}
+      >
+        {loading ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span className="opacity-0">{children}</span>
+          </>
+        ) : children}
+      </motion.button>
+    </Sparkles>
   );
 }

@@ -30,7 +30,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import { ChildProfile } from '@/lib/types';
-import { ThemeConfig } from '@/lib/themes';
 import Image from 'next/image';
 import { ThemedButton } from './ui/themed-button';
 import { ThemedChip } from './ui/themed-chip';
@@ -39,10 +38,10 @@ import { ChildProfileModal } from './child-profile-modal';
 import { MagicButton } from './ui/magic-button';
 import { useToast } from '@/context/toast-context';
 import { useTranslations } from 'next-intl';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface CreateStoryScreenProps {
   profile: any;
-  currentTheme: ThemeConfig;
   onBack: () => void;
   onComplete: (id: string) => void;
   onStartLoading: () => void;
@@ -83,8 +82,9 @@ const STYLES = [
   { id: "Фэнтези", icon: Sword, labelKey: "fantasy" }
 ];
 
-export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, onStartLoading }: CreateStoryScreenProps) {
+export function CreateStoryScreen({ profile, onBack, onComplete, onStartLoading }: CreateStoryScreenProps) {
   const { showToast } = useToast();
+  const { currentTheme, colorMode } = useUITheme();
   const t = useTranslations('Create');
   const tInterests = useTranslations('Interests');
   const tMorals = useTranslations('Morals');
@@ -104,6 +104,7 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
   });
 
   const supabase = createClient();
+  const colors = currentTheme.colors[colorMode];
 
   const fetchChildren = async () => {
     if (!profile?.id) return;
@@ -169,19 +170,19 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
   const selectedChild = children.find(c => c.id === formData.child_id);
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: currentTheme.colors.background }}>
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: colors.background }}>
       <main className="flex-1 p-6 overflow-y-auto">
         {/* Progress Bar moved inside main */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: `${currentTheme.colors.text}20` }}>
+          <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: `${colors.text.primary}20` }}>
             <motion.div 
               className="h-full"
-              style={{ backgroundColor: currentTheme.colors.primary }}
+              style={{ backgroundColor: colors.primary }}
               initial={{ width: '0%' }}
               animate={{ width: `${(step / 5) * 100}%` }}
             />
           </div>
-          <span className="text-xs font-black opacity-40" style={{ color: currentTheme.colors.text }}>{step}/5</span>
+          <span className="text-xs font-black opacity-40" style={{ color: colors.text.primary }}>{step}/5</span>
         </div>
 
         <AnimatePresence mode="wait">
@@ -194,8 +195,8 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
               className="space-y-6"
             >
               <div className="text-center space-y-2 mb-8">
-                <h2 className="text-3xl font-black" style={{ color: currentTheme.colors.text }}>{t('whoIsHero')}</h2>
-                <p className="opacity-60 font-medium" style={{ color: currentTheme.colors.text }}>{t('whoIsHeroSub')}</p>
+                <h2 className="text-3xl font-black" style={{ color: colors.text.primary }}>{t('whoIsHero')}</h2>
+                <p className="opacity-60 font-medium" style={{ color: colors.text.secondary }}>{t('whoIsHeroSub')}</p>
               </div>
               
               <div className="grid grid-cols-1 gap-4">
@@ -217,7 +218,7 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
                             : "border-opacity-0"
                         )}
                         style={{
-                          borderColor: formData.child_id === child.id ? currentTheme.colors.primary : 'transparent'
+                          borderColor: formData.child_id === child.id ? colors.primary : 'transparent'
                         }}
                       >
                         <div 
@@ -226,14 +227,14 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
                             formData.child_id === child.id ? "border-opacity-100" : "border-opacity-20"
                           )}
                           style={{ 
-                            borderColor: currentTheme.colors.primary,
-                            backgroundColor: !child.avatar_url ? `${currentTheme.colors.primary}20` : 'transparent' 
+                            borderColor: colors.primary,
+                            backgroundColor: !child.avatar_url ? `${colors.primary}20` : 'transparent' 
                           }}
                         >
                           {child.avatar_url ? (
                             <Image src={child.avatar_url} alt={child.name} fill className="object-cover" />
                           ) : (
-                            <span className="text-2xl font-black uppercase" style={{ color: currentTheme.colors.primary }}>
+                            <span className="text-2xl font-black uppercase" style={{ color: colors.primary }}>
                               {child.name.charAt(0)}
                             </span>
                           )}
@@ -248,9 +249,9 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
                           <motion.div 
                             layoutId="selected-check"
                             className="w-8 h-8 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: currentTheme.colors.primary }}
+                            style={{ backgroundColor: colors.primary }}
                           >
-                            <Sparkles className="w-4 h-4" style={{ color: currentTheme.isDark ? '#000' : '#fff' }} />
+                            <Sparkles className="w-4 h-4" style={{ color: colorMode === 'dark' ? '#000' : '#fff' }} />
                           </motion.div>
                         )}
                       </ThemedCard>
@@ -265,9 +266,9 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
                     onClick={() => setIsModalOpen(true)}
                     className="w-16 h-16 rounded-full flex items-center justify-center transition-colors shadow-sm border-4 border-dashed"
                     style={{ 
-                      backgroundColor: `${currentTheme.colors.card}50`,
-                      borderColor: `${currentTheme.colors.primary}40`,
-                      color: currentTheme.colors.primary
+                      backgroundColor: `${colors.card}50`,
+                      borderColor: `${colors.primary}40`,
+                      color: colors.primary
                     }}
                   >
                     <Plus className="w-8 h-8" />
@@ -280,8 +281,8 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
           {step === 2 && (
             <motion.div key="step2" className="space-y-6">
               <div className="text-center space-y-2 mb-8">
-                <h2 className="text-3xl font-black" style={{ color: currentTheme.colors.text }}>{t('interests')}</h2>
-                <p className="opacity-60 font-medium" style={{ color: currentTheme.colors.text }}>{t('interestsSub')}</p>
+                <h2 className="text-3xl font-black" style={{ color: colors.text.primary }}>{t('interests')}</h2>
+                <p className="opacity-60 font-medium" style={{ color: colors.text.secondary }}>{t('interestsSub')}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {INTERESTS.map(item => (
@@ -303,8 +304,8 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
           {step === 3 && (
             <motion.div key="step3" className="space-y-6">
               <div className="text-center space-y-2 mb-8">
-                <h2 className="text-3xl font-black" style={{ color: currentTheme.colors.text }}>{t('moral')}</h2>
-                <p className="opacity-60 font-medium" style={{ color: currentTheme.colors.text }}>{t('moralSub')}</p>
+                <h2 className="text-3xl font-black" style={{ color: colors.text.primary }}>{t('moral')}</h2>
+                <p className="opacity-60 font-medium" style={{ color: colors.text.secondary }}>{t('moralSub')}</p>
               </div>
               <div className="grid grid-cols-1 gap-3">
                 {MORALS.map(item => (
@@ -326,8 +327,8 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
           {step === 4 && (
             <motion.div key="step4" className="space-y-6">
               <div className="text-center space-y-2 mb-8">
-                <h2 className="text-3xl font-black" style={{ color: currentTheme.colors.text }}>{t('style')}</h2>
-                <p className="opacity-60 font-medium" style={{ color: currentTheme.colors.text }}>{t('styleSub')}</p>
+                <h2 className="text-3xl font-black" style={{ color: colors.text.primary }}>{t('style')}</h2>
+                <p className="opacity-60 font-medium" style={{ color: colors.text.secondary }}>{t('styleSub')}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {STYLES.map(item => (
@@ -354,35 +355,35 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
               className="space-y-8"
             >
               <div className="text-center space-y-2 mb-8">
-                <h2 className="text-3xl font-black" style={{ color: currentTheme.colors.text }}>{t('ready')}</h2>
-                <p className="opacity-60 font-medium" style={{ color: currentTheme.colors.text }}>{t('readySub')}</p>
+                <h2 className="text-3xl font-black" style={{ color: colors.text.primary }}>{t('ready')}</h2>
+                <p className="opacity-60 font-medium" style={{ color: colors.text.secondary }}>{t('readySub')}</p>
               </div>
 
               <ThemedCard theme={currentTheme} className="p-8 border-4 space-y-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <Sparkles className="w-24 h-24" style={{ color: currentTheme.colors.primary }} />
+                  <Sparkles className="w-24 h-24" style={{ color: colors.primary }} />
                 </div>
                 
                 <div className="space-y-4 relative z-10">
-                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${currentTheme.colors.text}10` }}>
+                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${colors.text.primary}10` }}>
                     <span className="opacity-40 font-bold uppercase text-[10px] tracking-widest">{t('summaryHero')}</span>
-                    <span className="font-black text-lg" style={{ color: currentTheme.colors.primary }}>{selectedChild?.name}</span>
+                    <span className="font-black text-lg" style={{ color: colors.primary }}>{selectedChild?.name}</span>
                   </div>
-                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${currentTheme.colors.text}10` }}>
+                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${colors.text.primary}10` }}>
                     <span className="opacity-40 font-bold uppercase text-[10px] tracking-widest">{t('summaryInterests')}</span>
                     <span className="font-black text-right max-w-[180px]">{formData.interests.map(interest => {
                       const item = INTERESTS.find(i => i.id === interest);
                       return item ? tInterests(item.labelKey) : interest;
                     }).join(', ')}</span>
                   </div>
-                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${currentTheme.colors.text}10` }}>
+                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${colors.text.primary}10` }}>
                     <span className="opacity-40 font-bold uppercase text-[10px] tracking-widest">{t('summaryMoral')}</span>
                     <span className="font-black">{(() => {
                       const item = MORALS.find(m => m.id === formData.moral_theme);
                       return item ? tMorals(item.labelKey) : formData.moral_theme;
                     })()}</span>
                   </div>
-                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${currentTheme.colors.text}10` }}>
+                  <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: `${colors.text.primary}10` }}>
                     <span className="opacity-40 font-bold uppercase text-[10px] tracking-widest">{t('summaryStyle')}</span>
                     <span className="font-black">{(() => {
                       const item = STYLES.find(s => s.id === formData.art_style);
@@ -408,7 +409,7 @@ export function CreateStoryScreen({ profile, currentTheme, onBack, onComplete, o
         </AnimatePresence>
       </main>
 
-      <footer className="p-6 bg-transparent backdrop-blur-md border-t" style={{ borderColor: `${currentTheme.colors.text}10` }}>
+      <footer className="p-6 bg-transparent backdrop-blur-md border-t" style={{ borderColor: `${colors.text.primary}10` }}>
         <div className="flex gap-3">
           {step > 1 && (
             <ThemedButton 

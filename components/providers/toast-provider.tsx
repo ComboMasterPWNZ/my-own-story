@@ -18,7 +18,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       <div className="fixed top-0 left-0 right-0 flex flex-col items-center gap-2 z-[200] pointer-events-none pt-4">
-        <AnimatePresence mode="multiple">
+        <AnimatePresence mode="wait">
           {toasts.map((toast) => (
             <div key={toast.id} className="pointer-events-auto">
               <Toast

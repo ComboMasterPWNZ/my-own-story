@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/context/ThemeContext';
+import { useUITheme } from '@/context/UIThemeContext';
 import { useUser } from '@/hooks/useUser';
 import { useState, useEffect } from 'react';
 import { Globe, ChevronRight } from 'lucide-react';
@@ -11,11 +11,12 @@ import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 
 export function LanguageSwitcher() {
-  const { currentTheme } = useTheme();
+  const { currentTheme, colorMode } = useUITheme();
   const { user } = useUser();
   const supabase = createClient();
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [currentLocale, setCurrentLocale] = useState('ru');
+  const colors = currentTheme.colors[colorMode];
 
   useEffect(() => {
     // Загружаем язык из Supabase или URL
@@ -54,31 +55,30 @@ export function LanguageSwitcher() {
   return (
     <>
       <Card 
-        className={cn("p-4 flex items-center justify-between cursor-pointer group border-2 rounded-[2rem]", currentTheme.cardStyle)}
+        className={cn("p-4 flex items-center justify-between cursor-pointer group border-2 rounded-[2rem]")}
         onClick={() => setIsLanguageModalOpen(true)}
       >
         <div className="flex items-center gap-4">
           <div 
             className="w-14 h-14 rounded-full flex items-center justify-center border-4"
             style={{ 
-              borderColor: currentTheme.colors.primary,
-              backgroundColor: `${currentTheme.colors.primary}20`
+              borderColor: colors.primary,
+              backgroundColor: `${colors.primary}20`
             }}
           >
-            <Globe className="w-6 h-6" style={{ color: currentTheme.colors.primary }} />
+            <Globe className="w-6 h-6" style={{ color: colors.primary }} />
           </div>
           <div className="text-left">
-            <p className="font-black text-lg">{languageNames[currentLocale]?.name || 'Language'}</p>
-            <p className="text-xs font-bold opacity-40 uppercase tracking-wider">{languageNames[currentLocale]?.flag || '🌐'}</p>
+            <p className="font-black text-lg" style={{ color: colors.text.primary }}>{languageNames[currentLocale]?.name || 'Language'}</p>
+            <p className="text-xs font-bold opacity-40 uppercase tracking-wider" style={{ color: colors.text.secondary }}>{languageNames[currentLocale]?.flag || '🌐'}</p>
           </div>
         </div>
-        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
+        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" style={{ color: colors.text.secondary }} />
       </Card>
 
       <LanguagePickerModal
         isOpen={isLanguageModalOpen}
         onClose={() => setIsLanguageModalOpen(false)}
-        currentTheme={currentTheme}
       />
     </>
   );

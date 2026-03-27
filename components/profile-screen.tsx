@@ -6,7 +6,6 @@ import { ArrowLeft, LogOut, Trash2, Crown, Book, Heart, Palette, Sparkles, Plus,
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
-import { ThemeConfig } from '@/lib/themes';
 import { ChildProfile, Appearance } from '@/lib/types';
 import { ChildProfileModal } from './child-profile-modal';
 import { LanguageSwitcher } from './language-switcher';
@@ -17,18 +16,19 @@ import { Card } from './ui/card';
 import { Textarea } from './ui/textarea';
 import { useToast } from '@/context/toast-context';
 import { ConfirmModal } from './ui/confirm-modal';
+import { useUITheme } from '@/context/UIThemeContext';
 
 interface ProfileScreenProps {
   profile: any;
-  currentTheme: ThemeConfig;
   onBack: () => void;
   onUpdateProfile: (updated: any) => void;
 }
 
-export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }: ProfileScreenProps) {
+export function ProfileScreen({ profile, onBack, onUpdateProfile }: ProfileScreenProps) {
   const t = useTranslations('Profile');
   const locale = useLocale();
   const { showToast } = useToast();
+  const { currentTheme, colorMode } = useUITheme();
   const [stats, setStats] = useState({ total: 0, favorites: 0 });
   const [children, setChildren] = useState<ChildProfile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +40,7 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
   const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
   const supabase = createClient();
+  const colors = currentTheme.colors[colorMode];
 
   const fetchChildren = async () => {
     if (!profile?.id) return;
@@ -161,15 +162,15 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 p-6 space-y-8 pb-12">
         {/* Profile Info */}
-        <Card className={cn("p-8 flex flex-col items-center text-center border-2", currentTheme.cardStyle)}>
+        <Card className={cn("p-8 flex flex-col items-center text-center border-2")}>
           <div 
             className="w-24 h-24 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black mb-4 shadow-lg rotate-3"
-            style={{ backgroundColor: currentTheme.colors.primary }}
+            style={{ backgroundColor: colors.primary }}
           >
             {profile?.full_name?.[0] || 'U'}
           </div>
-          <h3 className="text-2xl font-black">{profile?.full_name}</h3>
-          <p className="opacity-40 font-bold">{profile?.email}</p>
+          <h3 className="text-2xl font-black" style={{ color: colors.text.primary }}>{profile?.full_name}</h3>
+          <p className="opacity-40 font-bold" style={{ color: colors.text.secondary }}>{profile?.email}</p>
         </Card>
 
         {/* Language Switcher */}
@@ -218,27 +219,27 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
                       transition={{ delay: index * 0.05 }}
                     >
                       <Card 
-                        className={cn("p-4 flex items-center justify-between group border-2 rounded-[2rem]", currentTheme.cardStyle)}
+                        className={cn("p-4 flex items-center justify-between group border-2 rounded-[2rem]")}
                       >
                         <div className="flex items-center gap-4">
                           <div 
                             className="w-14 h-14 rounded-full overflow-hidden border-4 relative flex items-center justify-center transition-colors"
                             style={{ 
-                              borderColor: currentTheme.colors.primary,
-                              backgroundColor: !child.avatar_url ? `${currentTheme.colors.primary}20` : 'transparent'
+                              borderColor: colors.primary,
+                              backgroundColor: !child.avatar_url ? `${colors.primary}20` : 'transparent'
                             }}
                           >
                             {child.avatar_url ? (
                               <Image src={child.avatar_url} alt={child.name} fill className="object-cover" />
                             ) : (
-                              <span className="text-xl font-black uppercase" style={{ color: currentTheme.colors.primary }}>
+                              <span className="text-xl font-black uppercase" style={{ color: colors.primary }}>
                                 {child.name.charAt(0)}
                               </span>
                             )}
                           </div>
                           <div>
-                            <p className="font-black text-lg">{child.name}</p>
-                            <p className="text-xs font-bold opacity-40 uppercase tracking-wider">
+                            <p className="font-black text-lg" style={{ color: colors.text.primary }}>{child.name}</p>
+                            <p className="text-xs font-bold opacity-40 uppercase tracking-wider" style={{ color: colors.text.secondary }}>
                               {child.age} {child.age === 1 ? t('age1') : child.age < 5 ? t('age2') : t('age5')} • {appearance?.gender === 'boy' ? t('boy') : t('girl')}
                             </p>
                           </div>
@@ -254,7 +255,7 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
                   );
                 })
               ) : (
-                <Card className={cn("p-8 border-dashed flex flex-col items-center text-center gap-3", currentTheme.cardStyle)}>
+                <Card className={cn("p-8 border-dashed flex flex-col items-center text-center gap-3")}>
                   <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-2xl">👶</div>
                   <p className="text-sm font-bold opacity-40">{t('noChildren')}</p>
                 </Card>
@@ -265,22 +266,22 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <Card className={cn("p-6 flex flex-col items-center gap-2 border-2", currentTheme.cardStyle)}>
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: currentTheme.colors.card, color: currentTheme.colors.primary }}>
+          <Card className={cn("p-6 flex flex-col items-center gap-2 border-2")}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: colors.card, color: colors.primary }}>
               <Book className="w-6 h-6" />
             </div>
             <div className="text-center">
-              <p className="text-xs font-bold opacity-40 uppercase tracking-wider">{t('stories')}</p>
-              <p className="font-black text-2xl">{stats.total}</p>
+              <p className="text-xs font-bold opacity-40 uppercase tracking-wider" style={{ color: colors.text.secondary }}>{t('stories')}</p>
+              <p className="font-black text-2xl" style={{ color: colors.text.primary }}>{stats.total}</p>
             </div>
           </Card>
-          <Card className={cn("p-6 flex flex-col items-center gap-2 border-2", currentTheme.cardStyle)}>
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: currentTheme.colors.card, color: currentTheme.colors.secondary }}>
+          <Card className={cn("p-6 flex flex-col items-center gap-2 border-2")}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: colors.card, color: colors.secondary }}>
               <Heart className="w-6 h-6" />
             </div>
             <div className="text-center">
-              <p className="text-xs font-bold opacity-40 uppercase tracking-wider">{t('favorites')}</p>
-              <p className="font-black text-2xl">{stats.favorites}</p>
+              <p className="text-xs font-bold opacity-40 uppercase tracking-wider" style={{ color: colors.text.secondary }}>{t('favorites')}</p>
+              <p className="font-black text-2xl" style={{ color: colors.text.primary }}>{stats.favorites}</p>
             </div>
           </Card>
         </div>
@@ -394,12 +395,12 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
 
         {/* Feedback Section (Premium Only) */}
         {isPremium && (
-          <Card className={cn("p-6 space-y-4 border-2", currentTheme.cardStyle)}>
+          <Card className={cn("p-6 space-y-4 border-2")}>
             <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
                 <MessageSquare className="w-5 h-5" />
               </div>
-              <h4 className="font-black text-lg">{t('feedback')}</h4>
+              <h4 className="font-black text-lg" style={{ color: colors.text.primary }}>{t('feedback')}</h4>
             </div>
             
             <AnimatePresence mode="wait">
@@ -456,11 +457,11 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
         <div className="space-y-3">
           <button
             onClick={handleSignOut}
-            className={cn("w-full p-8 flex items-center justify-start gap-4 border-2 rounded-[2.5rem] transition-all duration-300 hover:scale-[1.02]", currentTheme.cardStyle)}
+            className={cn("w-full p-8 flex items-center justify-start gap-4 border-2 rounded-[2.5rem] transition-all duration-300 hover:scale-[1.02]")}
             style={{ 
-              color: currentTheme.colors.text,
-              backgroundColor: currentTheme.colors.card,
-              borderColor: `${currentTheme.colors.primary}20`
+              color: colors.text.primary,
+              backgroundColor: colors.card,
+              borderColor: `${colors.primary}20`
             }}
           >
             <LogOut className="w-6 h-6 opacity-40" />
@@ -468,11 +469,11 @@ export function ProfileScreen({ profile, currentTheme, onBack, onUpdateProfile }
           </button>
           <button
             onClick={() => setShowDeleteAccountConfirm(true)}
-            className={cn("w-full p-8 flex items-center justify-start gap-4 border-2 rounded-[2.5rem] transition-all duration-300 hover:scale-[1.02]", currentTheme.cardStyle)}
+            className={cn("w-full p-8 flex items-center justify-start gap-4 border-2 rounded-[2.5rem] transition-all duration-300 hover:scale-[1.02]")}
             style={{ 
               color: '#ef4444',
-              backgroundColor: currentTheme.colors.card,
-              borderColor: `${currentTheme.colors.primary}20`
+              backgroundColor: colors.card,
+              borderColor: `${colors.primary}20`
             }}
           >
             <Trash2 className="w-6 h-6" />
